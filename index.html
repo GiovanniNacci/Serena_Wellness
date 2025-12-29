@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serena Wellness - Massaggi, Yoga & Pilates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #9d8b7f;
+            --secondary: #a8956c;
+            --cream: #faf8f5;
+            --dark: #4a4238;
+            --light-grey: #e8e4df;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, rgba(157, 139, 127, 0.05) 0%, rgba(168, 149, 108, 0.05) 100%);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--light-grey);
+            position: relative;
+        }
+
+        .logo-container {
+            max-width: 500px;
+            margin: 0 auto 1.5rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 2px 8px rgba(157, 139, 127, 0.15));
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            display: inline-flex;
+            background: white;
+            border-radius: 50px;
+            padding: 0.3rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease 0.3s backwards;
+        }
+
+        .language-toggle button {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            background: transparent;
+            color: var(--dark);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .language-toggle button.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(157, 139, 127, 0.3);
+        }
+
+        .language-toggle button:hover:not(.active) {
+            color: var(--primary);
+        }
+
+        /* Contact Bar */
+        .contact-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            animation: fadeIn 1s ease 0.6s backwards;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .contact-item:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-item svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .intro-text {
+            text-align: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Service Categories */
+        .service-category {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease backwards;
+        }
+
+        .service-category:nth-child(2) { animation-delay: 0.1s; }
+        .service-category:nth-child(3) { animation-delay: 0.2s; }
+        .service-category:nth-child(4) { animation-delay: 0.3s; }
+
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary) 0%, transparent 100%);
+        }
+
+        /* Service Items */
+        .service-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .service-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(157, 139, 127, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-grey);
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(157, 139, 127, 0.15);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .service-price {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .service-duration {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo-container {
+                max-width: 350px;
+            }
+
+            .category-title {
+                font-size: 2rem;
+            }
+
+            .service-name {
+                font-size: 1.2rem;
+            }
+
+            .service-price {
+                font-size: 1.3rem;
+            }
+
+            .contact-bar {
+                gap: 1rem;
+            }
+
+            .intro-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1.5rem 0.75rem;
+            }
+
+            .logo-container {
+                max-width: 280px;
+            }
+
+            .language-toggle button {
+                padding: 0.6rem 1.3rem;
+                font-size: 0.85rem;
+            }
+
+            .category-title {
+                font-size: 1.7rem;
+            }
+
+            .service-item {
+                padding: 1.2rem;
+            }
+
+            .service-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .service-name {
+                font-size: 1.1rem;
+                min-width: auto;
+            }
+
+            .contact-item {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Logo.png" alt="Serena Wellness Logo">
+        </div>
+        
+        <div class="language-toggle">
+            <button class="lang-btn active" data-lang="it">Italiano</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+
+        <div class="contact-bar">
+            <a href="https://instagram.com/serena_wellness.it" target="_blank" class="contact-item">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                @serena_wellness.it
+            </a>
+            <a href="https://wa.me/393388500435" target="_blank" class="contact-item">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                +39 338 850 0435
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div id="italian-section" class="page-section active">
+            <p class="intro-text">
+                Scopri i nostri servizi di benessere per corpo e mente. 
+                Massaggi professionali, yoga e pilates per il tuo equilibrio interiore.
+            </p>
+            <div id="italian-services" class="loading">Caricamento servizi...</div>
+        </div>
+
+        <div id="english-section" class="page-section">
+            <p class="intro-text">
+                Discover our wellness services for body and mind. 
+                Professional massages, yoga and pilates for your inner balance.
+            </p>
+            <div id="english-services" class="loading">Loading services...</div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Serena Wellness. Yoga & Massage</p>
+    </footer>
+
+    <script>
+        // Language toggle functionality
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const sections = {
+            'it': document.getElementById('italian-section'),
+            'en': document.getElementById('english-section')
+        };
+
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                
+                // Update active button
+                langButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show corresponding section
+                Object.keys(sections).forEach(key => {
+                    sections[key].classList.remove('active');
+                });
+                sections[lang].classList.add('active');
+            });
+        });
+
+        // Load and parse Excel file
+        async function loadPrices() {
+            try {
+                const response = await fetch('Prices.xlsx');
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // Parse Italian services (rows 1-21)
+                const italianServices = parseServices(data.slice(1, 21), 'italian');
+                displayServices('italian-services', italianServices);
+
+                // Parse English services (rows 23-43)
+                const englishServices = parseServices(data.slice(23, 43), 'english');
+                displayServices('english-services', englishServices);
+
+            } catch (error) {
+                console.error('Error loading prices:', error);
+                document.getElementById('italian-services').innerHTML = 
+                    '<p style="color: red;">Errore nel caricamento dei prezzi</p>';
+                document.getElementById('english-services').innerHTML = 
+                    '<p style="color: red;">Error loading prices</p>';
+            }
+        }
+
+        function parseServices(rows, language) {
+            const services = {
+                'Massaggio': [],
+                'Massage': [],
+                'Yoga': [],
+                'Pilates': []
+            };
+
+            rows.forEach(row => {
+                if (row[0] && row[1] && row[2] && row[3]) {
+                    const category = row[0];
+                    const service = {
+                        name: row[1],
+                        duration: row[2],
+                        price: row[3]
+                    };
+                    
+                    if (services[category]) {
+                        services[category].push(service);
+                    }
+                }
+            });
+
+            return services;
+        }
+
+        function displayServices(containerId, services) {
+            const container = document.getElementById(containerId);
+            let html = '';
+
+            for (const [category, items] of Object.entries(services)) {
+                if (items.length > 0) {
+                    html += `
+                        <div class="service-category">
+                            <h2 class="category-title">${category}</h2>
+                            <div class="service-list">
+                    `;
+
+                    items.forEach(service => {
+                        html += `
+                            <div class="service-item">
+                                <div class="service-header">
+                                    <div class="service-name">${service.name}</div>
+                                    <div class="service-price">${service.price}</div>
+                                </div>
+                                <div class="service-duration">${service.duration}</div>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Load prices when page loads
+        window.addEventListener('DOMContentLoaded', loadPrices);
+    </script>
+</body>
+</html>
