@@ -231,6 +231,15 @@
             letter-spacing: 0.5px;
         }
 
+        .service-description {
+            margin-top: 0.8rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+
         /* Footer */
         footer {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -451,6 +460,42 @@
             }
         }
 
+        // Service descriptions
+        const descriptions = {
+            italian: {
+                'Massaggio Svedese Classico': 'Tecnica tradizionale con movimenti fluidi per rilassare i muscoli e migliorare la circolazione.',
+                'Massaggio Rilassante': 'Tocco delicato e armonioso per sciogliere le tensioni e ritrovare la serenità interiore.',
+                'Massaggio Ayurveda': 'Antica arte indiana che riequilibra corpo e mente attraverso movimenti ritmici e oli essenziali.',
+                'Massaggio Decontratturante': 'Pressioni profonde mirate per sciogliere contratture muscolari e alleviare dolori cronici.',
+                'Massaggio Linfodrenante': 'Stimola il sistema linfatico, riduce gonfiori e favorisce l\'eliminazione delle tossine.',
+                'Massaggio di Coppia': 'Esperienza condivisa di benessere in un ambiente intimo e rilassante per due persone.',
+                'Lezione di Yoga individuale': 'Pratica personalizzata di asana, respirazione e meditazione su misura per te.',
+                'Lezione di Yoga (2 persone)': 'Sessione di yoga condivisa per approfondire la pratica insieme a un partner.',
+                'Lezione di Yoga (3-10 persone)': 'Lezione di gruppo che unisce energia collettiva e attenzione individuale.',
+                'Lezione di Yoga (+11 persone)': 'Pratica di gruppo dinamica per connettersi con la comunità yoga.',
+                'Lezione di Pilates individuale': 'Allenamento personalizzato per rafforzare il core e migliorare postura e flessibilità.',
+                'Lezione di Pilates (2 persone)': 'Sessione di pilates in coppia per motivarsi a vicenda nel rafforzamento muscolare.',
+                'Lezione di Pilates (3-10 persone)': 'Lezione di gruppo per tonificare il corpo con esercizi controllati e precisi.',
+                'Lezione di Pilates (+11 persone)': 'Classe dinamica di pilates per sviluppare forza e flessibilità insieme.'
+            },
+            english: {
+                'Classic Swedish Massage': 'Traditional technique with flowing movements to relax muscles and improve circulation.',
+                'Relaxing Massage': 'Gentle and harmonious touch to release tension and restore inner serenity.',
+                'Ayurvedic Massage': 'Ancient Indian art that balances body and mind through rhythmic movements and essential oils.',
+                'Deep Tissue Massage': 'Targeted deep pressure to release muscle knots and relieve chronic pain.',
+                'Lymphatic Drainage Massage': 'Stimulates the lymphatic system, reduces swelling and promotes toxin elimination.',
+                'Couple Massage': 'Shared wellness experience in an intimate and relaxing environment for two people.',
+                'Yoga_Private Class (1 person)': 'Personalized practice of asanas, breathing and meditation tailored just for you.',
+                'Yoga_Private Class (2 people)': 'Shared yoga session to deepen your practice together with a partner.',
+                'Yoga_Private Class (3-10 people)': 'Group lesson combining collective energy with individual attention.',
+                'Yoga_Private Class (+11 people)': 'Dynamic group practice to connect with the yoga community.',
+                'Pilates_Private Class (1 person)': 'Personalized training to strengthen your core and improve posture and flexibility.',
+                'Pilates_Private Class (2 people)': 'Pilates session in pairs to motivate each other in muscle strengthening.',
+                'Pilates_Private Class (3-10 people)': 'Group class to tone the body with controlled and precise exercises.',
+                'Pilates_Private Class (+11 people)': 'Dynamic pilates class to develop strength and flexibility together.'
+            }
+        };
+
         function parseServices(rows, language) {
             const services = {
                 'Massaggio': [],
@@ -462,10 +507,17 @@
             rows.forEach(row => {
                 if (row[0] && row[1] && row[2] && row[3]) {
                     const category = row[0];
+                    const serviceName = row[1];
+                    // Create unique key for English Yoga/Pilates classes
+                    const descKey = (language === 'english' && (category === 'Yoga' || category === 'Pilates')) 
+                        ? `${category}_${serviceName}` 
+                        : serviceName;
+                    
                     const service = {
-                        name: row[1],
+                        name: serviceName,
                         duration: row[2],
-                        price: row[3]
+                        price: row[3],
+                        description: descriptions[language][descKey] || ''
                     };
                     
                     if (services[category]) {
@@ -497,6 +549,7 @@
                                     <div class="service-price">${service.price}</div>
                                 </div>
                                 <div class="service-duration">${service.duration}</div>
+                                ${service.description ? `<div class="service-description">${service.description}</div>` : ''}
                             </div>
                         `;
                     });
